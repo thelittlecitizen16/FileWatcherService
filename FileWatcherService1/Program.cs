@@ -16,11 +16,13 @@ namespace FileWatcherService1
         public static void Main(string[] args)
         {
             var logsFilePath = ConfigurationManager.AppSettings["logsFile"];
+
             Log.Logger = new LoggerConfiguration()
          .MinimumLevel.Information()
          .WriteTo.File(logsFilePath,
              rollOnFileSizeLimit: true)
          .CreateLogger();
+
             try
             {
                 Log.Information("starting up the service");
@@ -48,14 +50,5 @@ namespace FileWatcherService1
                 }).UseSerilog();
         }
     }
-    public static class SerilogHostBuilderExtensions
-    {
-        public static IHostBuilder UseSerilog(this IHostBuilder builder,
-            Serilog.ILogger logger = null, bool dispose = false)
-        {
-            builder.ConfigureServices((context, collection) =>
-                collection.AddSingleton<ILoggerFactory>(services => new SerilogLoggerFactory(logger, dispose)));
-            return builder;
-        }
-    }
+    
 }

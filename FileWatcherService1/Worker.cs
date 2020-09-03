@@ -13,7 +13,7 @@ namespace FileWatcherService1
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private  readonly ILogger<Worker> _logger;
 
         public Worker(ILogger<Worker> logger)
         {
@@ -36,26 +36,26 @@ namespace FileWatcherService1
 
             ThreadPool.SetMaxThreads(maxThreads, maxThreads * 2);
         }
-        private static void FileWatcher_Changed(object sender, FileSystemEventArgs e)
+        private  void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             ThreadPool.QueueUserWorkItem((o) => ProcessFile(e));
         }
 
-        private static void ProcessFile(FileSystemEventArgs e)
+        private  void ProcessFile(FileSystemEventArgs e)
         {
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Changed:
-                    Log.Information($"status is changed: {e.Name} in path {e.FullPath}");
+                    _logger.LogInformation($"status is changed: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Created:
-                    Log.Information($"status is created: {e.Name} in path {e.FullPath}");
+                    _logger.LogInformation($"status is created: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Deleted:
-                    Log.Information($"status is deleted: {e.Name} in path {e.FullPath}");
+                    _logger.LogInformation($"status is deleted: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Renamed:
-                    Log.Information($"status is renamed: {e.Name} in path {e.FullPath}");
+                    _logger.LogInformation($"status is renamed: {e.Name} in path {e.FullPath}");
                     break;
             }
         }

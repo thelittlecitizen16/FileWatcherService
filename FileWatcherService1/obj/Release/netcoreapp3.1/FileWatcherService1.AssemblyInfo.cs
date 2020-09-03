@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("dotnet-FileWatcherService1-DE9CCC2A-EFAC-47ED-838D-0D68A3585D6E")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("FileWatcherService1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
