@@ -54,9 +54,17 @@
               "target": "Package",
               "version": "[2.9.0, )"
             },
+            "Serilog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
             "Serilog.Sinks.File": {
               "target": "Package",
               "version": "[4.1.0, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             }
           },
           "imports": [

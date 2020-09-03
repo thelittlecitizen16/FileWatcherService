@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace FileWatcherService1
 {
@@ -19,54 +22,40 @@ namespace FileWatcherService1
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                FileSystemWatcher fileWatcher = new FileSystemWatcher(@"C:\WorkerServiceExample");
+            var folderPath = ConfigurationManager.AppSettings["folderPath"];
+            FileSystemWatcher fileWatcher = new FileSystemWatcher(folderPath);
 
-                //Enable events
-                fileWatcher.EnableRaisingEvents = true;
+            fileWatcher.EnableRaisingEvents = true;
 
-                //Add event watcher
-                fileWatcher.Changed += FileWatcher_Changed;
-                fileWatcher.Created += FileWatcher_Changed;
-                fileWatcher.Deleted += FileWatcher_Changed;
-                fileWatcher.Renamed += FileWatcher_Changed;
+            fileWatcher.Changed += FileWatcher_Changed;
+            fileWatcher.Created += FileWatcher_Changed;
+            fileWatcher.Deleted += FileWatcher_Changed;
+            fileWatcher.Renamed += FileWatcher_Changed;
 
-                var maxThreads = 4;
+            var maxThreads = 4;
 
-                // Times to as most machines have double the logic processers as cores
-                ThreadPool.SetMaxThreads(maxThreads, maxThreads * 2);
-
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                // await Task.Delay(1000, stoppingToken);
-            }
+            ThreadPool.SetMaxThreads(maxThreads, maxThreads * 2);
         }
         private static void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             ThreadPool.QueueUserWorkItem((o) => ProcessFile(e));
         }
 
-        //This method processes your file, you can do your sync here
         private static void ProcessFile(FileSystemEventArgs e)
         {
-            // Based on the eventtype you do your operation
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Changed:
-                    Console.WriteLine($"File is changed: {e.Name}");
-                    Log.Information($"File is changed: {e.Name}");
+                    Log.Information($"status is changed: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Created:
-                    Console.WriteLine($"File is created: {e.Name}");
-                    Log.Information($"File is created: {e.Name}");
+                    Log.Information($"status is created: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Deleted:
-                    Console.WriteLine($"File is deleted: {e.Name}");
-                    Log.Information($"File is deleted: {e.Name}");
+                    Log.Information($"status is deleted: {e.Name} in path {e.FullPath}");
                     break;
                 case WatcherChangeTypes.Renamed:
-                    Console.WriteLine($"File is renamed: {e.Name}");
-                    Log.Information($"File is renamed: {e.Name}");
+                    Log.Information($"status is renamed: {e.Name} in path {e.FullPath}");
                     break;
             }
         }
